@@ -62,10 +62,52 @@ A **PySpark Random Forest Classifier** labels each production record as `Low`, `
 | F1 Score | Reported at runtime |
 
 ---
+## 🔄 Methodology Flow
+
+The pipeline follows a structured end-to-end architecture:
+
+```
+Data Selection (USDA Feedgrain Dataset)
+        │
+        ▼
+Azure Blob Storage (Secure Cloud Storage)
+        │
+        ▼
+Data Ingestion via PySpark (Apache Spark Session)
+        │
+        ▼
+ETL Processing
+├── Cleaning (whitespace, duplicates, nulls, outliers via IQR)
+├── Transformation (schema casting, feature engineering)
+└── Feature Engineering (cyclical sin/cos month, commodity index, production quantiles)
+        │
+        ▼
+┌───────────────────────────────────────────────┐
+│         Machine Learning Models               │
+├───────────────┬───────────────┬───────────────┤
+│   XGBoost     │  Random Forest│  Random Forest│
+│   Regressor   │  Regressor    │  Classifier   │
+│ (Price Pred.) │ (Demand Pred.)│ (Prod. Level) │
+└───────────────┴───────────────┴───────────────┘
+        │
+        ▼
+PostgreSQL (Results Storage via JDBC)
+        │
+        ▼
+Tableau Visualization
+├── XGBoost Line Chart
+├── XGBoost Polar Chart
+├── XGBoost Bar Chart
+├── Demand vs Production Line Chart
+├── Predicted Demand Stacked Area Chart
+├── Actual vs Predicted Demand Line Chart
+├── Production Trends Stacked Bar Chart
+└── High/Low Production Frequency Chart
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
+| Layer | Technology |![Uploading image.png…]()
+
 |-------|------------|
 | Data Source | USDA FeedGrains Dataset (Azure Data Lake Storage Gen2) |
 | Processing | Apache Spark 3.5.5 (PySpark) |
